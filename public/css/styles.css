@@ -1,0 +1,35 @@
+.list-group {
+	margin-bottom: 0;
+}
+
+.list-group-item {
+	border-left-width: 0px; 
+	border-right-width: 0px;
+}
+
+.list-group-item:first-child {
+	border-radius: 0;
+	border-top-width: 0px;
+}
+
+.list-group-item:last-child {
+	border-radius: 0;
+	border-bottom: 0;
+}
+
+.new-message {
+	width: 100%; 
+	margin-top: 12px;
+}
+
+#text {
+	border-bottom-left-radius: 0;
+	border-top-right-radius: 3px; 
+	border-bottom-width: 0;
+}
+
+#textSubmit {
+	width:100%; 
+	border-top-left-radius: 0px; 
+	border-top-right-radius: 0px;
+}

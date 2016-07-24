@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">NodeJS chat</a>
+		    </div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="active"><a href="/">Ajax <span class="sr-only">(current)</span></a></li>
+		        <li><a href="jquery">jQuery Ajax</a></li>
+		        <li><a href="sockets">Sockets</a></li>
+		      </ul>
+		    </div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Messages:</h3>
+					</div>
+					<div class="">
+						<ul id="messages" class="list-group"></ul>
+					</div>
+					<div class="panel-footer">
+						<div class="input-group">
+							<input class="form-control" type="text" name="" placeholder="Your name" id="nameInput">
+							<span class="input-group-btn">
+								<input class="btn btn-default" type="button" name="" value="OK" id="nameButton">
+							</span>
+						</div>
+
+						<div class="input-group new-message">
+							<textarea class="form-control" id="text" placeholder="Message"></textarea>
+							<input class="btn btn-default" type="button" name="" value="Send" id="textSubmit">
+						</div>
+					</div>
+				</div>
+				<div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		(function() {
+			var nameButton = document.getElementById('nameButton'),
+				nameInput = document.getElementById('nameInput'),
+				messages = document.getElementById('messages'),
+				text = document.getElementById('text'),
+				textSubmit = document.getElementById('textSubmit');
+
+			var userName = 'User1';
+
+			nameButton.onclick = function() {
+				userName = nameInput.value || 'user1'
+			}
+
+			textSubmit.onclick = function() {
+				var data = {
+					name: userName,
+					text: text.value
+				};
+
+				text.value = ''; 
+
+				ajaxRequest({
+					method: 'POST',
+					url: '/messages',
+					data: data
+				});
+			}
+
+			var ajaxRequest = function(options) {
+				var url = options.url || '/',
+					method = options.method || 'GET',
+					callback = options.callback || function() {},
+					data = options.data || {},
+					xmlHttp = new XMLHttpRequest();
+
+				xmlHttp.open(method, url, true);
+				xmlHttp.setRequestHeader('Content-Type', 'application/json');
+				xmlHttp.send(JSON.stringify(data));
+				xmlHttp.onreadystatechange = function() {
+					if (xmlHttp.status == 200 && xmlHttp.readyState === 4) {
+						callback(xmlHttp.responseText);
+					}
+				};
+			};
+			
+			var getData = function() {
+				ajaxRequest({
+					url: 'messages',
+					method: 'GET',
+					callback: function(msg) {
+						var msg = JSON.parse(msg);
+						messages.innerHTML = '';
+						for (var i in msg) {
+							if (msg.hasOwnProperty(i)) {
+								var element = document.createElement('li');
+								element.className += 'list-group-item';
+								element.innerHTML = '<b>' + msg[i].name + ':</b> '+ msg[i].text;
+								messages.appendChild(element);
+							}
+						}
+					}
+				})
+			}; 
+
+			getData();
+
+			setInterval(function() {
+				getData();
+			}, 1000);
+
+		})();
+	</script>
+</body>
+</html>
